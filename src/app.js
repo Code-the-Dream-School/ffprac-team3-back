@@ -18,6 +18,6 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use('/api/v1', mainRouter);
 
 //user routes
-app.use('api/v1/users', require('.routes/userRoutes'));
+app.use('/api/v1/users', require('./routes/userRoutes.js'));
 
 module.exports = app;
