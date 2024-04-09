@@ -1,21 +1,22 @@
-const User = require('../models/UserProfile');
+const UserProfile = require('../models/UserProfile');
 const { StatusCodes } = require('http-status-codes');
 const { BadRequestError, NotFoundError } = require('../errors');
 const jwt = require('jsonwebtoken');
+
 const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
     if (!name || !email || !password)
       throw new BadRequestError('Please provide name, email, and password');
-    res.send('Successfully accessing the registerUser route');
-    console.log(req.body);
-    const user = await User.create({ ...req.body });
-    //   const token = await user.createJWT();
-    //   res.status(StatusCodes.CREATED).json({
-    //     user: { name: user.getName() },
-    //     token,
-    //     message: "Registered successfully",
-    //   });
+
+    console.log({ ...req.body });
+    const user = await UserProfile.create({ ...req.body });
+    console.log(user);
+
+    res.status(StatusCodes.CREATED).json({
+      user: { name: user.getName() },
+      message: 'Registered successfully',
+    });
   } catch (e) {
     console.log(e);
     res.status(500).json({ msg: 'Unable to signup' });

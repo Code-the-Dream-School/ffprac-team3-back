@@ -1,23 +1,20 @@
+require('dotenv').config();
 const { PORT = 8000 } = process.env;
-const app = require("./app");
-require("dotenv").config();
+const app = require('./app');
 const Grid = require('gridfs-stream');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
-//connectdb
-const connectDB = require("./db/connect");
+//connectDB
+const connectDB = require('./db/connect');
 
 const listener = async () => {
   try {
-    const conn = await connectDB(process.env.MONGO_URI);
-    
-    let gfs;
+    await connectDB(process.env.MONGO_URI);
 
-    conn.once('open', () => {
-      // Initialize GridFS stream
-      gfs = Grid(conn.db, mongoose.mongo);
-      gfs.collection('uploads');
-    });
+    let gfs;
+    const db = mongoose.connection.db;
+    gfs = Grid(db, mongoose.mongo);
+    gfs.collection('uploads');
 
     console.log(`Listening on Port ${PORT}!`);
   } catch (error) {
@@ -26,4 +23,3 @@ const listener = async () => {
 };
 
 app.listen(PORT, listener);
-
