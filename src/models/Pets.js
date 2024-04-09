@@ -1,9 +1,28 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const PetsSchema = mongoose.Schema({
-    notes: {
-        type: String
-    }
-}) 
+  type: {
+    type: String,
+    require: [true, 'Please provide a pet type'],
+  },
+  age: {
+    type: String,
+  },
+  sex: {
+    type: String,
+  },
+  name: {
+    type: String,
+  },
+  description: {
+    type: String,
+  },
+  isFavorite: {
+    type: Boolean,
+  },
+  location: {
+    type: String,
+  },
+});
 
-module.exports = mongoose.model('Pets', PetsSchema)
+module.exports = mongoose.model('Pet', PetsSchema);
