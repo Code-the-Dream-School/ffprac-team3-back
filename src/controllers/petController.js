@@ -25,10 +25,6 @@ const updatePet = async (req, res) => {
     throw new BadRequestError('Pet type cannot be blank');
   }
 
-  console.log('This is the pet ID: ', petId);
-  console.log('This is the req.body: ', req.body);
-  console.log('This is the userID: ', userId);
-
   const pet = await Pet.findOneAndUpdate(
     { _id: petId, authorizedUsers: userId },
     req.body,
