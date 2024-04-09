@@ -7,7 +7,7 @@ const getAllPets = async (req, res) => {
 };
 
 const createPet = async (req, res) => {
-  req.body.authorizedUsers = req.user.userId;
+  req.body.authorizedUsers = req.user;
   const pet = await Pet.create(req.body);
   res
     .status(StatusCodes.CREATED)
@@ -19,7 +19,24 @@ const updatePet = async (req, res) => {
 };
 
 const deletePet = async (req, res) => {
-  res.send('Success: Delete Pet');
+  const {
+    params: { id: petId },
+  } = req;
+
+  const userId = req.user;
+
+  console.log(petId, userId);
+
+  const pet = await Pet.findOneAndDelete({
+    _id: petId,
+    authorizedUsers: userId,
+  });
+
+  if (!pet) {
+    throw new Error(`No pet with id ${petId} found.`);
+  }
+
+  res.status(StatusCodes.OK).send(`Success removing pet with id ${petId}.`);
 };
 
 module.exports = {

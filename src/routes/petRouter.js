@@ -11,7 +11,7 @@ const {
 
 router.route('/getAllPets').get(getAllPets);
 router.route('/createPet').post(auth, createPet);
-router.route('/updatePet').patch(updatePet);
-router.route('/deletePet').delete(deletePet);
+router.route('/updatePet/:id').patch(auth, updatePet);
+router.route('/deletePet/:id').delete(auth, deletePet);
 
 module.exports = router;
