@@ -9,7 +9,9 @@ const getAllPets = async (req, res) => {
 const createPet = async (req, res) => {
   req.body.authorizedUsers = req.user.userId;
   const pet = await Pet.create(req.body);
-  res.status(StatusCodes.CREATED).send({ pet: pet._id });
+  res
+    .status(StatusCodes.CREATED)
+    .send({ msg: 'You successfully created a new pet profile.', pet: pet._id });
 };
 
 const updatePet = async (req, res) => {

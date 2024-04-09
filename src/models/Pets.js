@@ -22,7 +22,7 @@ const PetsSchema = mongoose.Schema(
       type: Boolean,
     },
     location: {
-      type: String,
+      type: mongoose.Mixed,
     },
     authorizedUsers: [
       {
