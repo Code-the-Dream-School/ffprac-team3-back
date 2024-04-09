@@ -15,15 +15,38 @@ const createPet = async (req, res) => {
 };
 
 const updatePet = async (req, res) => {
-  res.send('Success: update pet');
+  const {
+    user: userId,
+    params: { id: petId },
+    body: { type },
+  } = req;
+
+  if (type.trim() === 0) {
+    throw new BadRequestError('Pet type cannot be blank');
+  }
+
+  console.log('This is the pet ID: ', petId);
+  console.log('This is the req.body: ', req.body);
+  console.log('This is the userID: ', userId);
+
+  const pet = await Pet.findOneAndUpdate(
+    { _id: petId, authorizedUsers: userId },
+    req.body,
+    { new: true, runValidators: true }
+  );
+
+  if (!pet) {
+    throw new Error(`No pet with id ${petId} found.`);
+  }
+
+  res.status(StatusCodes.OK).json({ msg: 'Successfully updated pet profile' });
 };
 
 const deletePet = async (req, res) => {
   const {
+    user: userId,
     params: { id: petId },
   } = req;
-
-  const userId = req.user;
 
   console.log(petId, userId);
 
