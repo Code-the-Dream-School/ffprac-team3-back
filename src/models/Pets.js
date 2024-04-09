@@ -23,6 +23,12 @@ const PetsSchema = mongoose.Schema({
   location: {
     type: String,
   },
+  authorizedUsers: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: 'UserProfile',
+    },
+  ],
 });
 
 module.exports = mongoose.model('Pet', PetsSchema);

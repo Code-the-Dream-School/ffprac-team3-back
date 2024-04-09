@@ -2,11 +2,14 @@ const Pet = require('../models/Pets');
 const { StatusCodes } = require('http-status-codes');
 
 const getAllPets = async (req, res) => {
-  res.send('Success: Get all pets');
+  const petData = await Pet.find({}).sort('CreatedAt');
+  res.status(StatusCodes.OK).json({ petData, count: petData.length });
 };
 
 const createPet = async (req, res) => {
-  res.send('Success: Create Pet');
+  req.body.authorizedUsers = req.user.userId;
+  const pet = await Pet.create(req.body);
+  res.status(StatusCodes.CREATED).send({ pet: pet._id });
 };
 
 const updatePet = async (req, res) => {
