@@ -56,7 +56,7 @@ UserProfileSchema.pre('save', async function () {
 });
 
 UserProfileSchema.methods.getName = function () {
-  return this.name;
+  return this.firstName;
 };
 
 UserProfileSchema.methods.createJWT = async function () {
