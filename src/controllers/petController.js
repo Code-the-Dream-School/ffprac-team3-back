@@ -1,4 +1,4 @@
-const Pet = require('../models/Pets');
+const Pet = require('../models/Pets.js');
 const { StatusCodes } = require('http-status-codes');
 
 const getAllPets = async (req, res) => {
@@ -8,7 +8,7 @@ const getAllPets = async (req, res) => {
 
 const createPet = async (req, res) => {
   req.body.authorizedUsers = req.user;
-  const pet = await Pet.create(req.body);
+  const pet = await Pet.create({...req.body, file: req.file});
   res
     .status(StatusCodes.CREATED)
     .send({ msg: 'You successfully created a new pet profile.', pet: pet._id });
@@ -27,7 +27,7 @@ const updatePet = async (req, res) => {
 
   const pet = await Pet.findOneAndUpdate(
     { _id: petId, authorizedUsers: userId },
-    req.body,
+    {...req.body, file: req.file},
     { new: true, runValidators: true }
   );
 

@@ -4,7 +4,7 @@ const PetsSchema = mongoose.Schema(
   {
     type: {
       type: String,
-      require: [true, 'Please provide a pet type'],
+      required: [true, 'Please provide a pet type'],
     },
     age: {
       type: String,
@@ -14,6 +14,10 @@ const PetsSchema = mongoose.Schema(
     },
     name: {
       type: String,
+    },
+    file: {
+      type: Object,
+      ref: 'GridFsFiles'
     },
     description: {
       type: String,

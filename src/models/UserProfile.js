@@ -42,7 +42,7 @@ const UserProfileSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      // match: [/^[0-9]+$/, 'Please provide valid phone number.'],
+      match: [/^[0-9]+$/, 'Please provide valid phone number.'],
       minlenght: 10,
       maxlenght: 10,
     },

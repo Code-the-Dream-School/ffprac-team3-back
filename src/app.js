@@ -47,15 +47,10 @@ const upload = multer({ storage });
 // routes
 app.use('/api/v1', mainRouter);
 
-//move it to pet routes once created
-app.post('/api/v1/upload', upload.single('file'), (req, res) => {
-  res.json({ file: req.file });
-});
-
 //user routes
 app.use('/api/v1/users', require('./routes/userRoutes.js'));
 
 // pet routes
-app.use('/api/v1/pets', require('./routes/petRouter.js'));
+app.use('/api/v1/pets', upload.single('file'), require('./routes/petRouter'));
 
 module.exports = app;

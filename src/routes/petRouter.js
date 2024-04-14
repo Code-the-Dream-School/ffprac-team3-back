@@ -10,7 +10,7 @@ const {
 } = require('../controllers/petController');
 
 router.route('/getAllPets').get(getAllPets);
-router.route('/createPet').post(auth, createPet);
+router.route('/createPet').post(createPet);
 router.route('/updatePet/:id').patch(auth, updatePet);
 router.route('/deletePet/:id').delete(auth, deletePet);
 
