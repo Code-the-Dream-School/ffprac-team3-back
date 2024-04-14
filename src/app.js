@@ -55,4 +55,7 @@ app.post('/api/v1/upload', upload.single('file'), (req, res) => {
 //user routes
 app.use('/api/v1/users', require('./routes/userRoutes.js'));
 
+// pet routes
+app.use('/api/v1/pets', require('./routes/petRouter.js'));
+
 module.exports = app;

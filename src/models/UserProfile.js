@@ -2,53 +2,56 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const UserProfileSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    required: [true, 'Please provide user first name.'],
+const UserProfileSchema = new mongoose.Schema(
+  {
+    firstName: {
+      type: String,
+      required: [true, 'Please provide user first name.'],
+    },
+    lastName: {
+      type: String,
+      required: [true, 'Please provide user last name.'],
+    },
+    email: {
+      type: String,
+      required: [true, 'Please provide email.'],
+      match: [
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+        'Please provide valid e-mail address.',
+      ],
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: [true, 'Please provide password.'],
+      minlenght: 8,
+    },
+    zipCode: {
+      type: String,
+      minlenght: 5,
+      maxlenght: 10,
+    },
+    email: {
+      type: String,
+      ref: 'UserLogon',
+    },
+    username: {
+      type: String,
+      minlenght: 3,
+      maxlenght: 40,
+    },
+    phone: {
+      type: String,
+      // match: [/^[0-9]+$/, 'Please provide valid phone number.'],
+      minlenght: 10,
+      maxlenght: 10,
+    },
+    address: {
+      type: String,
+    },
   },
-  lastName: {
-    type: String,
-    required: [true, 'Please provide user last name.'],
-  },
-  email: {
-    type: String,
-    required: [true, 'Please provide email.'],
-    match: [
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-      'Please provide valid e-mail address.',
-    ],
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: [true, 'Please provide password.'],
-    minlenght: 8,
-  },
-  zipCode: {
-    type: String,
-    minlenght: 5,
-    maxlenght: 10,
-  },
-  email: {
-    type: String,
-    ref: 'UserLogon',
-  },
-  username: {
-    type: String,
-    minlenght: 3,
-    maxlenght: 40,
-  },
-  phone: {
-    type: String,
-    // match: [/^[0-9]+$/, 'Please provide valid phone number.'],
-    minlenght: 10,
-    maxlenght: 10,
-  },
-  address: {
-    type: String,
-  },
-});
+  { timestamps: true }
+);
 
 UserProfileSchema.pre('save', async function () {
   const salt = await bcrypt.genSalt(10);
