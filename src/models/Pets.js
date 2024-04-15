@@ -3,36 +3,40 @@ const mongoose = require('mongoose');
 const PetsSchema = mongoose.Schema(
   {
     type: {
-      type: String,
-      required: [true, 'Please provide a pet type'],
+        type: String,
+        required: [true, 'Please provide a pet type'],
     },
     age: {
-      type: String,
+        type: String,
     },
     sex: {
-      type: String,
+        type: String,
     },
     name: {
-      type: String,
-    },
-    file: {
-      type: Object,
-      ref: 'GridFsFiles'
+        type: String,
     },
     description: {
-      type: String,
+        type: String,
     },
     isFavorite: {
-      type: Boolean,
+        type: Boolean,
     },
     location: {
-      type: mongoose.Mixed,
+        type: mongoose.Mixed,
+    },
+    fileImages: {
+        type: Object,
+        ref: 'GridFsFiles'
+    },
+    fileMedical: {
+        type: Object,
+        ref: 'GridFsFiles'
     },
     authorizedUsers: [
-      {
+        {
         type: mongoose.Types.ObjectId,
         ref: 'UserProfile',
-      },
+        },
     ],
   },
   { timestamps: true }

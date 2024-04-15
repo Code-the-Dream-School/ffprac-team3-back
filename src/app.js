@@ -13,15 +13,17 @@ const path = require('path');
 
 const mainRouter = require('./routes/mainRouter.js');
 
+
 // middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(logger('dev'));
 app.use(express.static('public'));
 app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(bodyParser.json());
 app.use(methodOverride('_method'));
+
 
 //create storage engine
 const storage = new GridFsStorage({
@@ -42,7 +44,6 @@ const storage = new GridFsStorage({
     });
   },
 });
-const upload = multer({ storage });
 
 // routes
 app.use('/api/v1', mainRouter);
@@ -51,6 +52,10 @@ app.use('/api/v1', mainRouter);
 app.use('/api/v1/users', require('./routes/userRoutes.js'));
 
 // pet routes
-app.use('/api/v1/pets', upload.single('file'), require('./routes/petRouter'));
+const uploads = multer({ storage });
+
+app.use('/api/v1/pets/medical', uploads.single('fileMedical'), require('./routes/petRouter'));
+app.use('/api/v1/pets', uploads.single('fileImages'), require('./routes/petRouter'));
+
 
 module.exports = app;

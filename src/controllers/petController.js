@@ -8,7 +8,8 @@ const getAllPets = async (req, res) => {
 
 const createPet = async (req, res) => {
   req.body.authorizedUsers = req.user;
-  const pet = await Pet.create({...req.body, file: req.file});
+  const data = JSON.parse(JSON.stringify(req.body))
+  const pet = await Pet.create({...data, fileImages: req.file});
   res
     .status(StatusCodes.CREATED)
     .send({ msg: 'You successfully created a new pet profile.', pet: pet._id });
@@ -27,7 +28,7 @@ const updatePet = async (req, res) => {
 
   const pet = await Pet.findOneAndUpdate(
     { _id: petId, authorizedUsers: userId },
-    {...req.body, file: req.file},
+    {...req.body, fileImages: req.file,},
     { new: true, runValidators: true }
   );
 
@@ -36,6 +37,25 @@ const updatePet = async (req, res) => {
   }
 
   res.status(StatusCodes.OK).json({ msg: 'Successfully updated pet profile' });
+};
+
+const updateMedicalPet = async (req, res) => {
+  const {
+    user: userId,
+    params: { id: petId },
+  } = req;
+  
+  const petPdf = await Pet.findOneAndUpdate(
+    { _id: petId, authorizedUsers: userId },
+    { fileMedical: req.file },
+    { new: true, runValidators: true }
+  );
+
+  if (!petPdf) {
+    throw new Error(`No medical record with id ${petId} found.`);
+  }
+
+  res.status(StatusCodes.OK).json({ msg: "Successfully updated pet's medical history" });
 };
 
 const deletePet = async (req, res) => {
@@ -62,5 +82,6 @@ module.exports = {
   getAllPets,
   createPet,
   updatePet,
+  updateMedicalPet,
   deletePet,
 };

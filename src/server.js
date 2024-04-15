@@ -20,7 +20,6 @@ const listener = async () => {
     const collection = gfs.collection('uploads');
     
     const files = await collection.find().toArray();
-    // console.log(files)
 
     if (files.length === files.length + 1) {
       files.forEach( async file => {
