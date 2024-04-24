@@ -1,9 +1,35 @@
 const Pet = require('../models/Pets.js');
 const { StatusCodes } = require('http-status-codes');
+const mongoose = require('mongoose');
+const { GridFSBucket } = require('mongodb');
+
+
+const db = mongoose.connection;
+
+const gfsBucket = new GridFSBucket(db, {bucketName: 'uploads'});
 
 const getAllPets = async (req, res) => {
   const petData = await Pet.find({}).sort('CreatedAt');
   res.status(StatusCodes.OK).json({ petData, count: petData.length });
+};
+
+const getPetImage = async (req, res) => {
+    try {
+        const { filename } = req.params;
+
+        const file = await Pet.findOne({ 'fileImages.filename': filename }).exec();
+
+        if (!file) {
+            return res.status(404).json({ error: 'File not found' });
+        }
+
+        const readstream = gfsBucket.openDownloadStreamByName(file.fileImages.filename);
+
+        readstream.pipe(res);
+    } catch (error) {
+        console.error('Error fetching pet image:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 };
 
 const createPet = async (req, res) => {
@@ -80,6 +106,7 @@ const deletePet = async (req, res) => {
 
 module.exports = {
   getAllPets,
+  getPetImage,
   createPet,
   updatePet,
   updateMedicalPet,

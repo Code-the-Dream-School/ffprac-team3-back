@@ -60,7 +60,7 @@ const getCurrentUser = async (req, res, next) => {
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
     //attach user to job routes
-    const user = await User.findById(payload.userId).select('-password');
+    const user = await UserProfile.findById(payload.userId).select('-password');
     res
       .status(StatusCodes.OK)
       .json({ user: { name: user.getName(), isadmin: user.isadmin }, token });
