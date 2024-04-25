@@ -31,10 +31,6 @@ const UserProfileSchema = new mongoose.Schema(
       minlenght: 5,
       maxlenght: 10,
     },
-    email: {
-      type: String,
-      ref: 'UserLogon',
-    },
     username: {
       type: String,
       minlenght: 3,
