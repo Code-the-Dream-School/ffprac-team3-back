@@ -10,7 +10,7 @@ const connectDB = require('./db/connect');
 
 
 
-const listener = async () => {
+const listener = async (req, res) => {
   try {
     await connectDB(process.env.MONGO_URI);
     
@@ -30,6 +30,7 @@ const listener = async () => {
         });
       });
     }
+  
     
     console.log(`Listening on Port ${PORT}!`);
   } catch (error) {
