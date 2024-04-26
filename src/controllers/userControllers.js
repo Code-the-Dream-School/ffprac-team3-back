@@ -4,18 +4,33 @@ const { BadRequestError, NotFoundError } = require('../errors');
 
 const registerUser = async (req, res) => {
   try {
-    const { firstName, lastName, email, password } = req.body;
-    if (!firstName || !lastName || !email || !password)
+    const {
+      firstName,
+      lastName,
+      email: userEmail,
+      password,
+      zipCode: userZip,
+    } = req.body;
+
+    console.log(req.body);
+    console.log(userEmail);
+
+    if (!firstName || !lastName || !userEmail || !password)
       throw new BadRequestError(
         'Please provide first name, last name, email, and password'
       );
 
-    const user = await UserProfile.create({ ...req.body });
-
-    res.status(StatusCodes.CREATED).json({
-      user: { name: user.getName() },
-      message: 'Registered successfully',
+    await UserProfile.create({
+      firstName,
+      lastName,
+      userEmail,
+      password,
+      userZip,
     });
+
+    res
+      .status(StatusCodes.CREATED)
+      .json({ firstName, msg: 'Successful registration' });
   } catch (e) {
     console.log(e);
     res.status(500).json({ msg: 'Unable to signup' });
@@ -25,12 +40,12 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
   // res.send('Successfully accessing the loginUser route ');
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { email: userEmail, password } = req.body;
+    if (!userEmail || !password) {
       throw new BadRequestError('Please provide email and password');
     }
 
-    const user = await UserProfile.findOne({ email });
+    const user = await UserProfile.findOne({ userEmail });
 
     if (!user)
       throw new UnauthenticatedError('Please provide valid credentials');
@@ -52,40 +67,50 @@ const loginUser = async (req, res) => {
 };
 
 const getCurrentUser = async (req, res) => {
-  const { user: userId } = req;
-  const user = await UserProfile.findOne({ _id: userId });
+  try {
+    const { user: userId } = req;
+    const user = await UserProfile.findOne({ _id: userId });
 
-  if (!user) {
-    throw new NotFoundError(`User not found.`);
+    if (!user) {
+      throw new NotFoundError(`User not found.`);
+    }
+
+    res.status(StatusCodes.OK).json({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      userEmail: user.userEmail,
+      userPhone: user.userPhone,
+      userAddress: user.userAddress,
+      userCity: user.userCity,
+      userState: user.userState,
+      userZip: user.userZip,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ msg: 'Unable to get user information' });
   }
-
-  res.status(StatusCodes.OK).json({
-    firstName: user.firstName,
-    lastName: user.lastName,
-    userEmail: user.userEmail,
-    userPhone: user.userPhone,
-    userAddress: user.userAddress,
-    userCity: user.userCity,
-    userState: user.userState,
-    userZip: user.userZip,
-  });
 };
 
 const updateUser = async (req, res) => {
-  const { user: userId } = req;
+  try {
+    const { user: userId } = req;
 
-  const profile = await UserProfile.updateOne({ _id: userId }, req.body, {
-    new: true,
-    runValidators: true,
-  });
+    const profile = await UserProfile.updateOne({ _id: userId }, req.body, {
+      new: true,
+      runValidators: true,
+    });
 
-  if (!profile) {
-    throw new NotFoundError(`User not found.`);
+    if (!profile) {
+      throw new NotFoundError(`User not found.`);
+    }
+
+    res
+      .status(StatusCodes.OK)
+      .json({ msg: 'Successfully updated user profile.' });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ msg: 'Unable to update user' });
   }
-
-  res
-    .status(StatusCodes.OK)
-    .json({ msg: 'Successfully updated user profile.' });
 };
 
 module.exports = { registerUser, loginUser, getCurrentUser, updateUser };
