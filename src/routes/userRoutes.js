@@ -12,7 +12,6 @@ const {
 router.route('/register').post(registerUser);
 router.route('/loginUser').post(loginUser);
 router.route('/updateUser').patch(auth, updateUser);
-
-router.route('/getCurrentUser').post(auth, getCurrentUser);
+router.route('/getCurrentUser').get(auth, getCurrentUser);
 
 module.exports = router;

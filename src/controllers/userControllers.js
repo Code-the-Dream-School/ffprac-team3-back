@@ -1,7 +1,6 @@
 const UserProfile = require('../models/UserProfile');
 const { StatusCodes } = require('http-status-codes');
 const { BadRequestError, NotFoundError } = require('../errors');
-const jwt = require('jsonwebtoken');
 
 const registerUser = async (req, res) => {
   try {
@@ -11,9 +10,7 @@ const registerUser = async (req, res) => {
         'Please provide first name, last name, email, and password'
       );
 
-    console.log({ ...req.body });
     const user = await UserProfile.create({ ...req.body });
-    console.log(user);
 
     res.status(StatusCodes.CREATED).json({
       user: { name: user.getName() },
@@ -46,13 +43,6 @@ const loginUser = async (req, res) => {
 
     res.status(StatusCodes.OK).json({
       fistName: user.firstName,
-      lastName: user.lastName,
-      userEmail: user.email,
-      userPhone: user.userPhone,
-      userAddress: user.userAddress,
-      userCity: user.userCity,
-      userState: user.userState,
-      userZip: user.userZip,
       token,
     });
   } catch (e) {
@@ -61,30 +51,28 @@ const loginUser = async (req, res) => {
   }
 };
 
-const getCurrentUser = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer')) {
-    throw new UnauthenticatedError('Authentication invalid');
+const getCurrentUser = async (req, res) => {
+  const { user: userId } = req;
+  const user = await UserProfile.findOne({ _id: userId });
+
+  if (!user) {
+    throw new NotFoundError(`User not found.`);
   }
-  const token = authHeader.split(' ')[1];
-  try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    //attach user to job routes
-    const user = await User.findById(payload.userId).select('-password');
-    res
-      .status(StatusCodes.OK)
-      .json({ user: { name: user.getName(), isadmin: user.isadmin }, token });
-  } catch (error) {
-    //throw new UnauthenticatedError("Authentication invalid");
-    console.log(error);
-    res.status(500).json({ msg: 'Authentication invalid' });
-  }
+
+  res.status(StatusCodes.OK).json({
+    firstName: user.firstName,
+    lastName: user.lastName,
+    userEmail: user.userEmail,
+    userPhone: user.userPhone,
+    userAddress: user.userAddress,
+    userCity: user.userCity,
+    userState: user.userState,
+    userZip: user.userZip,
+  });
 };
 
 const updateUser = async (req, res) => {
   const { user: userId } = req;
-  console.log(userId);
-  console.log(req.body);
 
   const profile = await UserProfile.updateOne({ _id: userId }, req.body, {
     new: true,
