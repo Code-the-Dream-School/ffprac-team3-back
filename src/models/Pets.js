@@ -6,6 +6,9 @@ const PetsSchema = mongoose.Schema(
         type: String,
         required: [true, 'Please provide a pet type'],
     },
+    breed: {
+        type: String,
+    },
     age: {
         type: String,
     },
