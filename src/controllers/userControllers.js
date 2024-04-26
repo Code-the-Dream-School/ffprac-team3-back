@@ -48,11 +48,11 @@ const loginUser = async (req, res) => {
       fistName: user.firstName,
       lastName: user.lastName,
       userEmail: user.email,
-      userPhone: user.phone,
-      userAddress: user.address,
-      userCity: user.city,
-      userState: user.state,
-      userZip: user.zipCode,
+      userPhone: user.userPhone,
+      userAddress: user.userAddress,
+      userCity: user.userCity,
+      userState: user.userState,
+      userZip: user.userZip,
       token,
     });
   } catch (e) {
@@ -81,4 +81,23 @@ const getCurrentUser = async (req, res, next) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getCurrentUser };
+const updateUser = async (req, res) => {
+  const { user: userId } = req;
+  console.log(userId);
+  console.log(req.body);
+
+  const profile = await UserProfile.updateOne({ _id: userId }, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!profile) {
+    throw new NotFoundError(`User not found.`);
+  }
+
+  res
+    .status(StatusCodes.OK)
+    .json({ msg: 'Successfully updated user profile.' });
+};
+
+module.exports = { registerUser, loginUser, getCurrentUser, updateUser };
