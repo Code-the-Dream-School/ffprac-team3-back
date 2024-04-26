@@ -44,7 +44,17 @@ const loginUser = async (req, res) => {
 
     const token = await user.createJWT();
 
-    res.status(StatusCodes.OK).json({ user: { name: user.firstName }, token });
+    res.status(StatusCodes.OK).json({
+      fistName: user.firstName,
+      lastName: user.lastName,
+      userEmail: user.email,
+      userPhone: user.phone,
+      userAddress: user.address,
+      userCity: user.city,
+      userState: user.state,
+      userZip: user.zipCode,
+      token,
+    });
   } catch (e) {
     console.log(e);
     res.status(500).json({ msg: 'Unable to login' });

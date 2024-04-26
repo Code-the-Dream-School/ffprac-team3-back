@@ -45,6 +45,12 @@ const UserProfileSchema = new mongoose.Schema(
     address: {
       type: String,
     },
+    city: {
+      type: String,
+    },
+    state: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
