@@ -11,9 +11,9 @@ const registerUser = async (req, res) => {
         'Please provide first name, last name, email, and password'
       );
 
-    console.log({ ...req.body });
+    // console.log({ ...req.body });
     const user = await UserProfile.create({ ...req.body });
-    console.log(user);
+    // console.log(user);
 
     res.status(StatusCodes.CREATED).json({
       user: { name: user.getName() },
