@@ -12,7 +12,7 @@ const UserProfileSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please provide user last name.'],
     },
-    email: {
+    userEmail: {
       type: String,
       required: [true, 'Please provide email.'],
       match: [
@@ -26,27 +26,24 @@ const UserProfileSchema = new mongoose.Schema(
       required: [true, 'Please provide password.'],
       minlenght: 8,
     },
-    zipCode: {
+    userZip: {
       type: String,
       minlenght: 5,
       maxlenght: 10,
     },
-    email: {
-      type: String,
-      ref: 'UserLogon',
-    },
-    username: {
-      type: String,
-      minlenght: 3,
-      maxlenght: 40,
-    },
-    phone: {
+    userPhone: {
       type: String,
       match: [/^[0-9]+$/, 'Please provide valid phone number.'],
       minlenght: 10,
       maxlenght: 10,
     },
-    address: {
+    userAddress: {
+      type: String,
+    },
+    userCity: {
+      type: String,
+    },
+    userState: {
       type: String,
     },
   },
@@ -63,14 +60,14 @@ UserProfileSchema.methods.getName = function () {
 };
 
 UserProfileSchema.methods.createJWT = async function () {
-  let tok = jwt.sign(
-    { userId: this._id, name: this.name },
+  let token = jwt.sign(
+    { userId: this._id, name: this.firstName },
     process.env.JWT_SECRET,
     {
       expiresIn: process.env.JWT_LIFETIME,
     }
   );
-  return tok;
+  return token;
 };
 
 UserProfileSchema.methods.comparePassword = async function (candidatePassword) {
